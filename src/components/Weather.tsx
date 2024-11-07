@@ -17,9 +17,7 @@ import { DialogHeader, DialogTrigger, Skeleton } from "./ui/Components"
 import { extractTime, getHoursToDisplay } from "./utils/utils"
 
 const WeatherApp = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [location, setLocation] = useState("London")
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isOpen, setIsOpen] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [time, setTime] = useState(new Date())
@@ -29,7 +27,12 @@ const WeatherApp = () => {
   const [weatherData, setWeatherData] = useState<IWeatherData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const BASE_URL = `http://api.weatherapi.com/v1/forecast.json?key=2710b039f12e426c930202029240511&q=${location}&days=1&aqi=no&alerts=no`
+  const BASE_URL = `http://api.weatherapi.com/v1/forecast.json?key=${
+    import.meta.env.VITE_APP_WEATHER_API_KEY
+  }&q=${location}&days=1&aqi=no&alerts=no`
+
+  // TODO: change background based on weather and day/night
+  // TODO: get better logos ?
 
   // Fetch weather data
   const fetchWeatherData = async () => {
