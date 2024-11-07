@@ -9,9 +9,11 @@ export function extractTime(dateString: string) {
 export function getHoursToDisplay(array: Hour[]) {
   return array.filter(
     (hour) =>
-      extractTime(hour.time) === "08:00" ||
+      extractTime(hour.time) === "07:00" ||
       extractTime(hour.time) === "10:00" ||
-      extractTime(hour.time) === "12:00" ||
-      extractTime(hour.time) === "16:00"
+      extractTime(hour.time) === "13:00" ||
+      extractTime(hour.time) === "15:00" ||
+      extractTime(hour.time) === "18:00" ||
+      extractTime(hour.time) === "21:00"
   )
 }

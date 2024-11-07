@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 import { MapPin, Menu } from "lucide-react"
-import { IWeatherData } from "types/types"
+import { Hour, IWeatherData } from "types/types"
 
 import {
   Box,
@@ -12,6 +12,7 @@ import {
   Input,
 } from "@mui/material"
 
+import dayBg from "../assets/day.jpg"
 import { DialogHeader, DialogTrigger, Skeleton } from "./ui/Components"
 import { extractTime, getHoursToDisplay } from "./utils/utils"
 
@@ -35,7 +36,6 @@ const WeatherApp = () => {
     try {
       setIsLoading(true)
       const response = await fetch(BASE_URL)
-      console.log("response", response)
       const data = await response.json()
       console.log("data", data)
       setWeatherData(data)
@@ -70,38 +70,79 @@ const WeatherApp = () => {
   }
 
   return (
-    <Box sx={{ width: "100vw", height: "100vh" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+      }}
+    >
       {/* Main Content */}
       <Box
         sx={{
           height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "start",
+          width: "100%",
+          position: "relative",
+
+          "& .illu": {
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center -60px",
+            opacity: 0.5,
+            position: "absolute",
+            zIndex: -1,
+          },
         }}
       >
+        <img className='illu' src={dayBg} alt='bg-img' />
+
         {/* Header */}
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            p: 2,
+            justifyContent: "space-between",
+            alignItems: "start",
+            maxHeight: 250,
+            // border: "1px solid red",
+            height: "100%",
           }}
         >
+          {/* Current Weather */}
+          {isLoading || !weatherData ? (
+            <Box className='text-left mb-8'>
+              <Skeleton className='h-20 w-40 mx-auto' />
+              <Skeleton className='h-6 w-32 mt-4 mx-auto' />
+            </Box>
+          ) : (
+            <CurrentWeather weatherData={weatherData} />
+          )}
           <Box
-            component='button'
-            onClick={() => setIsOpen(true)}
             sx={{
+              // border: "1px solid white",
               display: "flex",
-              alignItems: "center",
-              // background: "blue",
+              flexDirection: "column",
+              height: "100%",
+              p: 2,
             }}
           >
-            <MapPin />
-            <Box>
-              {weatherData?.location.name}|{weatherData?.location.country}
-            </Box>
+            <Button
+              variant='outlined'
+              onClick={() => setIsOpen(true)}
+              sx={{
+                color: "white",
+                borderColor: "transparent",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <MapPin />
+              <Box p={1}>
+                {weatherData?.location.name} | {weatherData?.location.country}
+              </Box>
+            </Button>
           </Box>
+
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
             <DialogTrigger>
               <Menu className='w-6 h-6 text-white' />
@@ -124,30 +165,6 @@ const WeatherApp = () => {
           </Dialog>
         </Box>
 
-        {/* Current Weather */}
-        {isLoading || !weatherData ? (
-          <Box className='text-left mb-8'>
-            <Skeleton className='h-20 w-40 mx-auto' />
-            <Skeleton className='h-6 w-32 mt-4 mx-auto' />
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "120px",
-              alignItems: "center",
-            }}
-          >
-            <Box sx={{ height: "60px" }}>
-              <img src={weatherData.current.condition.icon} />
-            </Box>
-            <Box sx={{ lineHeight: "100px", fontSize: "140px", px: 2 }}>
-              {Math.round(weatherData.current.temp_c)}°
-            </Box>
-          </Box>
-        )}
-
         {/* Hourly Forecast */}
         {/* Skeleton */}
         {isLoading || !weatherData ? (
@@ -156,44 +173,39 @@ const WeatherApp = () => {
           <CurveFooter>
             <Box
               sx={{
+                mt: "-20px",
                 background: "white",
                 color: "black",
                 width: "100%",
-                p: 2,
+                px: 2,
+                pb: 1,
+                pt: 0,
               }}
             >
-              <Box
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: 30,
-                  textAlign: "left",
-                  pb: 5,
-                }}
-              >
-                Weather Today
-              </Box>
-              <Box className='grid grid-cols-4' sx={{}}>
-                {getHoursToDisplay(
-                  weatherData.forecast.forecastday[0].hour
-                ).map((hour, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <Box sx={{ fontSize: 12, color: "grey" }}>
-                      {extractTime(hour.time)}
-                    </Box>
-                    <Box sx={{ height: "60px" }}>
-                      <img src={hour.condition.icon} />
-                    </Box>
-                    <Box sx={{ fontSize: 36 }}>{Math.round(hour.temp_c)}°</Box>
-                  </Box>
-                ))}
+              <Box pr={12}>
+                <Box
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: 30,
+                    textAlign: "right",
+                    pb: 1,
+                  }}
+                >
+                  Weather Today
+                </Box>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridAutoFlow: "column",
+                    justifyItems: "self-end",
+                  }}
+                >
+                  {getHoursToDisplay(
+                    weatherData.forecast.forecastday[0].hour
+                  ).map((hour, index) => (
+                    <HourlyItem hour={hour} key={index} />
+                  ))}
+                </Box>
               </Box>
             </Box>
           </CurveFooter>
@@ -205,6 +217,28 @@ const WeatherApp = () => {
 
 export default WeatherApp
 
+const HourlyItem = ({ hour }: { hour: Hour }) => {
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateRows: "min-content min-content min-content",
+        alignItems: "center",
+        justifyItems: "center",
+      }}
+    >
+      <Box sx={{ fontSize: 12, color: "grey", mb: "-10px" }}>
+        {extractTime(hour.time)}
+      </Box>
+
+      <img src={hour.condition.icon} />
+
+      <Box sx={{ fontSize: 24, fontWeight: "bold", mt: "-10px" }}>
+        {Math.round(hour.temp_c)}°
+      </Box>
+    </Box>
+  )
+}
 const CurveFooter = ({
   children,
 }: {
@@ -247,5 +281,32 @@ const Loading = () => {
         ))}
       </div>
     </div>
+  )
+}
+const CurrentWeather = ({ weatherData }: { weatherData: IWeatherData }) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        // border: "1px solid blue",
+        py: 3,
+      }}
+    >
+      <Box
+        sx={{
+          lineHeight: "100px",
+          fontSize: "140px",
+          px: 2,
+          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+        }}
+      >
+        {Math.round(weatherData.current.temp_c)}°
+      </Box>
+      <Box component='p'>
+        {weatherData.current.condition.text.toLowerCase()}
+      </Box>
+    </Box>
   )
 }
