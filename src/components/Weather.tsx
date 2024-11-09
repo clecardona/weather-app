@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { MapPin, Menu } from "lucide-react"
 import { Hour, IWeatherData } from "types/types"
@@ -12,57 +12,52 @@ import {
   Input,
 } from "@mui/material"
 
-import dayBg from "../assets/day.jpg"
+import { useWeather } from "../context/WeatherProvider"
+import { extractTime, getHoursToDisplay } from "../utils/utils"
+import { Background } from "./Background"
 import { DialogHeader, DialogTrigger, Skeleton } from "./ui/Components"
-import { extractTime, getHoursToDisplay } from "./utils/utils"
 
 const WeatherApp = () => {
-  const [location, setLocation] = useState("London")
+  // const [location, setLocation] = useState("London")
   const [isOpen, setIsOpen] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [time, setTime] = useState(new Date())
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isNight, setIsNight] = useState(false)
   const [newLocation, setNewLocation] = useState("")
-  const [weatherData, setWeatherData] = useState<IWeatherData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { weatherData, isLoading, setLocation } = useWeather()
+  // const [weatherData, setWeatherData] = useState<IWeatherData | null>(null)
+  // const [isLoading, setIsLoading] = useState(true)
+  // const shouldRefresh = useRefresh(4000)
 
-  const BASE_URL = `http://api.weatherapi.com/v1/forecast.json?key=${
-    import.meta.env.VITE_APP_WEATHER_API_KEY
-  }&q=${location}&days=1&aqi=no&alerts=no`
+  // const BASE_URL = `http://api.weatherapi.com/v1/forecast.json?key=${
+  //   import.meta.env.VITE_APP_WEATHER_API_KEY
+  // }&q=${location}&days=1&aqi=no&alerts=no`
 
-  // TODO: change background based on weather and day/night
+  // TODO: Trigger data refresh every 5 minutes by triggering the useEffect.
   // TODO: get better logos ?
 
+  //TODO: context + usFetchWeatherData
+
   // Fetch weather data
-  const fetchWeatherData = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch(BASE_URL)
-      const data = await response.json()
-      console.log("data", data)
-      setWeatherData(data)
-      setIsLoading(false)
-    } catch (error) {
-      console.error("Error fetching weather data:", error)
-      setIsLoading(false)
-    }
-  }
-  useEffect(() => {
-    // Update time and check if it's night (between 6 PM and 6 AM)
-    const interval = setInterval(() => {
-      const newTime = new Date()
-      setTime(newTime)
-      setIsNight(newTime.getHours() >= 18 || newTime.getHours() < 6)
-    }, 1)
-
-    fetchWeatherData()
-
-    return () => {
-      clearInterval(interval)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
+  // const fetchWeatherData = async () => {
+  //   try {
+  //     setIsLoading(true)
+  //     const response = await fetch(BASE_URL)
+  //     const data = await response.json()
+  //     console.log("data", data)
+  //     setWeatherData(data)
+  //     setIsLoading(false)
+  //   } catch (error) {
+  //     console.error("Error fetching weather data:", error)
+  //     setIsLoading(false)
+  //   }
+  // }
+  // useEffect(() => {
+  //   console.log("Fetching fresh weather data...")
+  //   fetchWeatherData()
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [location, shouldRefresh])
 
   const handleLocationUpdate = () => {
     if (newLocation.trim()) {
@@ -80,140 +75,127 @@ const WeatherApp = () => {
         position: "relative",
       }}
     >
-      {/* Main Content */}
-      <Box
-        sx={{
-          height: "100%",
-          width: "100%",
-          position: "relative",
+      {!isLoading && weatherData && (
+        <Background
+          isDay={Boolean(weatherData.current.is_day)}
+          conditionCode={weatherData.current.condition.code}
+        />
+      )}
 
-          "& .illu": {
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center -60px",
-            opacity: 0.5,
-            position: "absolute",
-            zIndex: -1,
-          },
+      {/* Header */}
+      <Box
+        id='current-weather'
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "start",
+          maxHeight: 250,
+          // border: "1px solid red",
+          height: "100%",
         }}
       >
-        <img className='illu' src={dayBg} alt='bg-img' />
-
-        {/* Header */}
+        {/* Current Weather */}
+        {isLoading || !weatherData ? (
+          <Box className='text-left mb-8'>
+            <Skeleton className='h-20 w-40 mx-auto' />
+            <Skeleton className='h-6 w-32 mt-4 mx-auto' />
+          </Box>
+        ) : (
+          <CurrentWeather weatherData={weatherData} />
+        )}
         <Box
           sx={{
+            // border: "1px solid white",
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "start",
-            maxHeight: 250,
-            // border: "1px solid red",
+            flexDirection: "column",
             height: "100%",
+            p: 2,
           }}
         >
-          {/* Current Weather */}
-          {isLoading || !weatherData ? (
-            <Box className='text-left mb-8'>
-              <Skeleton className='h-20 w-40 mx-auto' />
-              <Skeleton className='h-6 w-32 mt-4 mx-auto' />
-            </Box>
-          ) : (
-            <CurrentWeather weatherData={weatherData} />
-          )}
-          <Box
+          <Button
+            variant='outlined'
+            onClick={() => setIsOpen(true)}
             sx={{
-              // border: "1px solid white",
+              color: "white",
+              borderColor: "transparent",
               display: "flex",
-              flexDirection: "column",
-              height: "100%",
-              p: 2,
+              alignItems: "center",
             }}
           >
-            <Button
-              variant='outlined'
-              onClick={() => setIsOpen(true)}
-              sx={{
-                color: "white",
-                borderColor: "transparent",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <MapPin />
-              <Box p={1}>
-                {weatherData?.location.name} | {weatherData?.location.country}
-              </Box>
-            </Button>
-          </Box>
-
-          <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-            <DialogTrigger>
-              <Menu className='w-6 h-6 text-white' />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Change Location</DialogTitle>
-              </DialogHeader>
-              <div className='flex gap-2'>
-                <Input
-                  value={newLocation}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setNewLocation(e.target.value)
-                  }
-                  placeholder='Enter location...'
-                />
-                <Button onClick={handleLocationUpdate}>Update</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+            <MapPin />
+            <Box p={1}>
+              {weatherData?.location.name} | {weatherData?.location.country}
+            </Box>
+          </Button>
         </Box>
 
-        {/* Hourly Forecast */}
-        {/* Skeleton */}
-        {isLoading || !weatherData ? (
-          <Loading />
-        ) : (
-          <CurveFooter>
-            <Box
-              sx={{
-                mt: "-20px",
-                background: "white",
-                color: "black",
-                width: "100%",
-                px: 2,
-                pb: 1,
-                pt: 0,
-              }}
-            >
-              <Box pr={12}>
-                <Box
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: 30,
-                    textAlign: "right",
-                    pb: 1,
-                  }}
-                >
-                  Weather Today
-                </Box>
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridAutoFlow: "column",
-                    justifyItems: "self-end",
-                  }}
-                >
-                  {getHoursToDisplay(
-                    weatherData.forecast.forecastday[0].hour
-                  ).map((hour, index) => (
-                    <HourlyItem hour={hour} key={index} />
-                  ))}
-                </Box>
+        <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+          <DialogTrigger>
+            <Menu className='w-6 h-6 text-white' />
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Change Location</DialogTitle>
+            </DialogHeader>
+            <div className='flex gap-2'>
+              <Input
+                value={newLocation}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewLocation(e.target.value)
+                }
+                placeholder='Enter location...'
+              />
+              <Button onClick={handleLocationUpdate}>Update</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </Box>
+
+      {/* Hourly Forecast */}
+      {/* Skeleton */}
+      {isLoading || !weatherData ? (
+        <Loading />
+      ) : (
+        <CurveFooter>
+          <Box
+            sx={{
+              mt: "-20px",
+              background: "white",
+              color: "black",
+              width: "100%",
+              px: 2,
+              pb: 1,
+              pt: 0,
+            }}
+          >
+            <Box pr={12}>
+              <Box
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: 30,
+                  textAlign: "right",
+                  pb: 1,
+                }}
+              >
+                Weather Today
+              </Box>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridAutoFlow: "column",
+                  justifyItems: "self-end",
+                }}
+              >
+                {getHoursToDisplay(
+                  weatherData.forecast.forecastday[0].hour
+                ).map((hour, index) => (
+                  <HourlyItem hour={hour} key={index} />
+                ))}
               </Box>
             </Box>
-          </CurveFooter>
-        )}
-      </Box>
+          </Box>
+        </CurveFooter>
+      )}
     </Box>
   )
 }
@@ -230,7 +212,7 @@ const HourlyItem = ({ hour }: { hour: Hour }) => {
         justifyItems: "center",
       }}
     >
-      <Box sx={{ fontSize: 12, color: "grey", mb: "-10px" }}>
+      <Box sx={{ fontSize: 12, color: "grey", mb: "-4px" }}>
         {extractTime(hour.time)}
       </Box>
 
@@ -249,6 +231,7 @@ const CurveFooter = ({
 }) => {
   return (
     <Box
+      id='forecast-weather'
       sx={{
         width: "100%",
         zIndex: 100,
