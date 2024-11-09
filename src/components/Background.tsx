@@ -4,7 +4,7 @@ import dayClear from "../assets/day_clear.jpg"
 import dayRain from "../assets/day_rain.jpg"
 import nightClear from "../assets/night_clear.jpg"
 import nightRain from "../assets/night_rain.jpg"
-import { weatherConditions } from "./weatherConditions"
+import { getConditionText } from "../utils/utils"
 
 export function Background({
   isDay,
@@ -22,11 +22,6 @@ export function Background({
     // 'snow'
     // 'fog'
   }
-  function getConditionText(conditionCode: number) {
-    if (!(conditionCode in weatherConditions)) return ""
-    return weatherConditions[conditionCode].simple
-  }
-  //1030=rain
 
   //
   return (
