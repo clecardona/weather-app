@@ -7,8 +7,6 @@ export const CurrentWeather = () => {
   const { weatherData, isLoading } = useWeather()
   if (!weatherData || isLoading) return <Loading />
 
-  //   const <Icon/> = getConditionIcon(weatherData.current.condition.code)
-  //   getConditionIcon(weatherData.current.condition.code)
   return (
     <Box
       sx={{
