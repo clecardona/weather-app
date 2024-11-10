@@ -31,14 +31,17 @@ export function CurrentLocationAndTime() {
             color: "white",
             borderColor: "transparent",
             display: "flex",
+            gap: 0.3,
             alignItems: "center",
-            p: 0,
+            p: 1,
           }}
         >
           <MapPin />
-          <Box p={1}>
-            {weatherData?.location.name} | {weatherData?.location.country}
+          <Box fontWeight='bold' component='span'>
+            {weatherData?.location.name}
           </Box>
+          <Box component='span'>|</Box>
+          <Box component='span'>{weatherData?.location.country}</Box>
         </Button>
         <Box
           sx={{
