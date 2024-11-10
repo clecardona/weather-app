@@ -1,7 +1,7 @@
 import { Box, Skeleton } from "@mui/material"
 
 import { useWeather } from "../context/WeatherProvider"
-import { WeatherIcon } from "./weatherConditions"
+import { WeatherIconAnimated } from "./weatherConditions"
 
 export const CurrentWeather = () => {
   const { weatherData, isLoading } = useWeather()
@@ -38,12 +38,12 @@ export const CurrentWeather = () => {
           position: "absolute",
           bottom: "-30px",
           width: "100%",
-          "& svg": { width: 150 },
         }}
       >
-        <WeatherIcon
-          condition={weatherData.current.condition.code}
-          style={{ height: 100, color: "white" }}
+        <WeatherIconAnimated
+          style={{ height: 100, filter: "saturate(0.3)" }}
+          conditionCode={weatherData.current.condition.code}
+          isDay={Boolean(weatherData.current.is_day)}
         />
       </Box>
     </Box>

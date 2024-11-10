@@ -5,8 +5,6 @@ import { Background } from "./Background"
 import { CurrentContainer } from "./CurrentContainer"
 import { Forecast } from "./Forecast"
 
-// TODO: refactor by extracting components
-
 const Weather = () => {
   const { weatherData, isLoading } = useWeather()
 

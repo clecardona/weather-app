@@ -4,7 +4,7 @@ import { useWeather } from "../context/WeatherProvider"
 import { Hour } from "../types/types"
 import { extractTime, getHoursToDisplay } from "../utils/utils"
 import { Skeleton } from "./ui/Components"
-import { WeatherIcon } from "./weatherConditions"
+import { WeatherIconAnimated } from "./weatherConditions"
 
 interface IForecast {
   title: string
@@ -69,13 +69,13 @@ const ForecastItem = ({ hour }: { hour: Hour }) => {
     >
       <Box sx={{ fontSize: 12, color: "grey" }}>{extractTime(hour.time)}</Box>
 
-      {/* <img src={hour.condition.icon} /> */}
-      <WeatherIcon
-        condition={hour.condition.code}
-        style={{ height: 50, width: 50 }}
+      <WeatherIconAnimated
+        conditionCode={hour.condition.code}
+        style={{ height: 80, filter: "saturate(0.3)" }}
+        isDay={Boolean(hour.is_day)}
       />
 
-      <Box sx={{ fontSize: 24, fontWeight: "bold" }}>
+      <Box sx={{ fontSize: 24, fontWeight: "bold", mt: "-20px" }}>
         {Math.round(hour.temp_c)}°
       </Box>
     </Box>
