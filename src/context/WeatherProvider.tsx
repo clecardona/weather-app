@@ -43,7 +43,7 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
       setIsLoading(true)
       const response = await fetch(BASE_URL)
       const data = await response.json()
-      console.log("data", data)
+      // console.log("data", data)
       setWeatherData(data)
       setIsLoading(false)
     } catch (error) {
@@ -54,7 +54,7 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
   }
 
   useEffect(() => {
-    console.log("Fetching fresh weather data...")
+    // console.log("Fetching fresh weather data...")
     fetchWeatherData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, shouldRefresh])
