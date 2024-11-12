@@ -1,9 +1,14 @@
-import './App.css';
+import "./App.css"
 
-import Weather from './components/Weather';
+import Weather from "./components/Weather"
+import { WeatherProvider } from "./context/WeatherProvider"
 
 function App() {
-  return <Weather />
+  return (
+    <WeatherProvider>
+      <Weather />
+    </WeatherProvider>
+  )
 }
 
 export default App
