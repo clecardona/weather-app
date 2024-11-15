@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 import {
   Button,
@@ -6,10 +6,9 @@ import {
   DialogContent,
   DialogTitle,
   Input,
-} from "@mui/material"
+} from '@mui/material';
 
-import { useWeather } from "../context/WeatherProvider"
-import { DialogHeader } from "./ui/Components"
+import { useWeather } from '../context/WeatherProvider';
 
 interface IChangeLocationModal {
   isOpen: boolean
@@ -33,11 +32,11 @@ export function ChangeLocationModal({
   return (
     <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Change Location</DialogTitle>
-        </DialogHeader>
+        <DialogTitle>Change Location</DialogTitle>
+
         <div className='flex gap-2'>
           <Input
+            name='location'
             value={newLocation}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setNewLocation(e.target.value)

@@ -1,16 +1,16 @@
-import { Box } from "@mui/material"
+import { Box } from '@mui/material';
 
-import clearDay from "../assets/background/clear_day.jpg"
-import clearNight from "../assets/background/clear_night.jpg"
-import cloudyDay from "../assets/background/cloudy_day.jpg"
-import cloudyNight from "../assets/background/cloudy_night.jpg"
-import mistyDay from "../assets/background/misty_day.jpg"
-import mistyNight from "../assets/background/misty_night.jpg"
-import rainDay from "../assets/background/rain_day.jpg"
-import rainNight from "../assets/background/rain_night.jpg"
-import snowDay from "../assets/background/snow_day.jpg"
-import snowNight from "../assets/background/snow_night.jpg"
-import { getConditionText } from "../utils/utils"
+import clearDay from '../assets/background/clear_day.jpg';
+import clearNight from '../assets/background/clear_night.jpg';
+import cloudyDay from '../assets/background/cloudy_day.jpg';
+import cloudyNight from '../assets/background/cloudy_night.jpg';
+import mistyDay from '../assets/background/misty_day.jpg';
+import mistyNight from '../assets/background/misty_night.jpg';
+import rainDay from '../assets/background/rain_day.jpg';
+import rainNight from '../assets/background/rain_night.jpg';
+import snowDay from '../assets/background/snow_day.jpg';
+import snowNight from '../assets/background/snow_night.jpg';
+import { getConditionText } from '../utils/utils';
 
 export function Background({
   isDay,
@@ -39,8 +39,7 @@ export function Background({
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          objectPosition: "center -150px",
-          opacity: 0.5,
+          objectPosition: "center -30px",
           position: "absolute",
           zIndex: -1,
         },
@@ -50,6 +49,16 @@ export function Background({
         className='illu'
         src={getBackground(isDay, getConditionText(conditionCode))}
         alt='bg-img'
+      />
+      {/* overlay */}
+      <Box
+        id='background-overlay'
+        sx={{
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          backgroundColor: isDay ? "#00000095" : "#00000050",
+        }}
       />
     </Box>
   )

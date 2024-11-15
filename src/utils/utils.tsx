@@ -1,7 +1,7 @@
-import { CircleOff } from "lucide-react"
-import { Hour } from "types/types"
+import { CircleOff } from 'lucide-react';
+import { Hour } from 'types/types';
 
-import { weatherConditions } from "../components/weatherConditions"
+import { weatherConditions } from '../components/weatherConditions';
 
 export function extractTime(dateString: string) {
   const dateObject = new Date(dateString)
@@ -9,6 +9,7 @@ export function extractTime(dateString: string) {
   const minute = dateObject.getMinutes().toString().padStart(2, "0")
   return `${hour}:${minute}`
 }
+
 export function getHoursToDisplay(array: Hour[]) {
   return array.filter(
     (hour) =>
@@ -19,6 +20,24 @@ export function getHoursToDisplay(array: Hour[]) {
       extractTime(hour.time) === "19:00" ||
       extractTime(hour.time) === "22:00"
   )
+}
+
+export function getRecentWeatherData(array: Hour[]) {
+  const currentEpochTime = Math.floor(Date.now() / 1000)
+
+  let filteredData = array
+    .filter((item) => item.time_epoch >= currentEpochTime)
+    .filter((_, index) => index % 2 === 0)
+    .slice(0, 6)
+
+  if (filteredData.length < 6) {
+    filteredData = array
+      .filter((item) => item.time_epoch > currentEpochTime)
+      .filter((_, index) => index % 1 === 0)
+      .slice(0, 6)
+  }
+
+  return filteredData
 }
 export function formatDateTime(dateStr: string): { day: string; time: string } {
   const date = new Date(dateStr)

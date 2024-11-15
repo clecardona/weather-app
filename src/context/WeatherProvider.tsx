@@ -6,10 +6,15 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react"
+} from 'react';
 
-import { useRefresh } from "../hooks/useRefresh"
-import { IWeatherData } from "../types/types"
+import useLocalStorage from '../hooks/useLocalStorage';
+import { useRefresh } from '../hooks/useRefresh';
+import {
+  Hour,
+  IWeatherData,
+} from '../types/types';
+import { getRecentWeatherData } from '../utils/utils';
 
 interface IWeatherContext {
   weatherData: IWeatherData | null
@@ -17,6 +22,15 @@ interface IWeatherContext {
   error: unknown
   location: string
   setLocation: Dispatch<SetStateAction<string>>
+  currentWeather: {
+    temperature: number | undefined
+    location: { city: string; country: string }
+    conditionCode: number
+    isDay: boolean
+  }
+  forecast: {
+    hours: Hour[] | null
+  }
 }
 // Context
 const WeatherContext = createContext<IWeatherContext | undefined>(undefined)
@@ -27,13 +41,13 @@ interface WeatherProviderProps {
 }
 
 export function WeatherProvider({ children }: WeatherProviderProps) {
-  const [location, setLocation] = useState("Solna")
+  const [location, setLocation] = useLocalStorage("city", "Solna")
   const [weatherData, setWeatherData] = useState<IWeatherData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<unknown>(null)
-  const shouldRefresh = useRefresh(4000)
+  const shouldRefresh = useRefresh(1)
 
-  const BASE_URL = `http://api.weatherapi.com/v1/forecast.json?key=${
+  const BASE_URL = `https://api.weatherapi.com/v1/forecast.json?key=${
     import.meta.env.VITE_APP_WEATHER_API_KEY
   }&q=${location}&days=1&aqi=no&alerts=no`
 
@@ -43,7 +57,6 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
       setIsLoading(true)
       const response = await fetch(BASE_URL)
       const data = await response.json()
-      // console.log("data", data)
       setWeatherData(data)
       setIsLoading(false)
     } catch (error) {
@@ -54,14 +67,35 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
   }
 
   useEffect(() => {
-    // console.log("Fetching fresh weather data...")
     fetchWeatherData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, shouldRefresh])
 
   return (
     <WeatherContext.Provider
-      value={{ weatherData, isLoading, error, location, setLocation }}
+      value={{
+        weatherData,
+        isLoading,
+        error,
+        location,
+        setLocation,
+        currentWeather: {
+          location: {
+            city: weatherData?.location.name ?? "",
+            country: weatherData?.location.country ?? "",
+          },
+          temperature: weatherData?.current.temp_c,
+          conditionCode: weatherData?.current.condition.code ?? 1000,
+          isDay: weatherData ? Boolean(weatherData?.current.is_day) : true,
+        },
+        forecast: {
+          hours: weatherData?.forecast.forecastday[0].hour
+            ? getRecentWeatherData(
+                weatherData?.forecast.forecastday[0].hour
+              ).reverse()
+            : null,
+        },
+      }}
     >
       {children}
     </WeatherContext.Provider>

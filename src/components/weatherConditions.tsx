@@ -53,6 +53,7 @@ interface WeatherCondition {
   iconAnimated: { day: string; night: string }
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const weatherConditions: Record<number, WeatherCondition> = {
   1000: {
     text: "Sunny",
@@ -550,14 +551,14 @@ export const WeatherIcon = ({
   return <weather.icon style={{ color: weather.color, ...style }} {...props} />
 }
 interface WeatherIconAnimatedProps {
-  conditionCode: number
-  isDay: boolean
+  conditionCode?: number
+  isDay?: boolean
   style?: object
 }
 
 export const WeatherIconAnimated = ({
-  conditionCode,
-  isDay,
+  conditionCode = 1000,
+  isDay = true,
   style,
   ...props
 }: WeatherIconAnimatedProps) => {

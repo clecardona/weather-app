@@ -3,10 +3,10 @@ import { Box } from "@mui/material"
 import { useWeather } from "../context/WeatherProvider"
 import { Background } from "./Background"
 import { CurrentContainer } from "./CurrentContainer"
-import { Forecast } from "./Forecast"
+import { Forecast } from "./Forecast/Forecast"
 
 const Weather = () => {
-  const { weatherData, isLoading } = useWeather()
+  const { isLoading, currentWeather } = useWeather()
 
   return (
     <Box
@@ -16,10 +16,10 @@ const Weather = () => {
         position: "relative",
       }}
     >
-      {!isLoading && weatherData && (
+      {!isLoading && (
         <Background
-          isDay={Boolean(weatherData.current.is_day)}
-          conditionCode={weatherData.current.condition.code}
+          isDay={currentWeather.isDay}
+          conditionCode={currentWeather.conditionCode}
         />
       )}
 

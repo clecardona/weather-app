@@ -1,19 +1,27 @@
-import { Box, Skeleton } from "@mui/material"
+import {
+  Box,
+  Skeleton,
+} from '@mui/material';
 
-import { useWeather } from "../context/WeatherProvider"
-import { WeatherIconAnimated } from "./weatherConditions"
+import { useWeather } from '../context/WeatherProvider';
+import { WeatherIconAnimated } from './weatherConditions';
 
 export const CurrentWeather = () => {
-  const { weatherData, isLoading } = useWeather()
-  if (!weatherData || isLoading) return <Loading />
+  const { currentWeather, isLoading } = useWeather()
+
+  const isComponentLoading = isLoading && !currentWeather.temperature
+
+  if (isComponentLoading) return <LoadingSkeleton />
 
   return (
     <Box
+      id='currentWeather'
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         p: 3,
+        pl: 9,
         position: "relative",
       }}
     >
@@ -24,36 +32,50 @@ export const CurrentWeather = () => {
           fontSize: "200px",
           position: "relative",
           backgroundImage:
-            "-webkit-linear-gradient(#ffffff,#ffffff,#ffffff70, #ffffff00)",
+            "-webkit-linear-gradient(#ffffff,#ffffff,#ffffff90, #ffffff00)",
           "-webkit-background-clip": "text",
           "-webkit-text-fill-color": "transparent",
         }}
       >
-        {Math.round(weatherData.current.temp_c)}°
+        {Math.round(Number(currentWeather.temperature))}°
       </Box>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
           position: "absolute",
-          bottom: "-30px",
+          left: 30,
+          bottom: -30,
           width: "100%",
         }}
       >
         <WeatherIconAnimated
-          style={{ height: 100, filter: "saturate(0.3)" }}
-          conditionCode={weatherData.current.condition.code}
-          isDay={Boolean(weatherData.current.is_day)}
+          style={{ height: 120, filter: "saturate(0.3)" }}
+          conditionCode={currentWeather?.conditionCode}
+          isDay={currentWeather.isDay ? currentWeather.isDay : true}
         />
       </Box>
     </Box>
   )
 }
-const Loading = () => {
-  return (
-    <Box className='text-left mb-8'>
-      <Skeleton className='h-20 w-40 mx-auto' />
-      <Skeleton className='h-6 w-32 mt-4 mx-auto' />
-    </Box>
-  )
-}
+const LoadingSkeleton = () => (
+  <Box
+    id='currentWeather-skeleton'
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      p: 2,
+      position: "relative",
+      gap: 1,
+    }}
+  >
+    <Skeleton
+      sx={{
+        width: 250,
+        height: 200,
+        background: "#ffffff50",
+        transform: "unset",
+      }}
+    />
+  </Box>
+)
