@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lumi weather</string>
+    <string name="title_activity_main">Lumi weather</string>
+    <string name="package_name">lumi.weather.app</string>
+    <string name="custom_url_scheme">lumi.weather.app</string>
+</resources>
