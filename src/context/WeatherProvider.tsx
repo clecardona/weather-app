@@ -6,15 +6,12 @@ import {
   useContext,
   useEffect,
   useState,
-} from 'react';
+} from "react"
 
-import useLocalStorage from '../hooks/useLocalStorage';
-import { useRefresh } from '../hooks/useRefresh';
-import {
-  Hour,
-  IWeatherData,
-} from '../types/types';
-import { getRecentWeatherData } from '../utils/utils';
+import useLocalStorage from "../hooks/useLocalStorage"
+import { useWeatherRefresh } from "../hooks/useRefreshWeather"
+import { Hour, IWeatherData } from "../types/types"
+import { getRecentWeatherData } from "../utils/utils"
 
 interface IWeatherContext {
   weatherData: IWeatherData | null
@@ -45,8 +42,8 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
   const [weatherData, setWeatherData] = useState<IWeatherData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<unknown>(null)
-  const shouldRefresh = useRefresh(1)
 
+  //TODO: see if tomorrow.io is better API
   const BASE_URL = `https://api.weatherapi.com/v1/forecast.json?key=${
     import.meta.env.VITE_APP_WEATHER_API_KEY
   }&q=${location}&days=1&aqi=no&alerts=no`
@@ -57,11 +54,17 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
       setIsLoading(true)
       const response = await fetch(BASE_URL)
       const data = await response.json()
-      setWeatherData(data)
-      setIsLoading(false)
+      if (data?.error) {
+        console.error("Error fetching weather data:", data?.error)
+        setLocation("solna")
+      } else {
+        setWeatherData(data)
+        setIsLoading(false)
+      }
     } catch (error) {
       console.error("Error fetching weather data:", error)
       setError(error)
+      setLocation("solna")
       setIsLoading(false)
     }
   }
@@ -69,7 +72,9 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
   useEffect(() => {
     fetchWeatherData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, shouldRefresh])
+  }, [location])
+
+  useWeatherRefresh({ fetchWeatherData })
 
   return (
     <WeatherContext.Provider
@@ -81,18 +86,16 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
         setLocation,
         currentWeather: {
           location: {
-            city: weatherData?.location.name ?? "",
-            country: weatherData?.location.country ?? "",
+            city: weatherData?.location?.name ?? "",
+            country: weatherData?.location?.country ?? "",
           },
-          temperature: weatherData?.current.temp_c,
-          conditionCode: weatherData?.current.condition.code ?? 1000,
-          isDay: weatherData ? Boolean(weatherData?.current.is_day) : true,
+          temperature: weatherData?.current?.temp_c ?? 0,
+          conditionCode: weatherData?.current?.condition?.code ?? 1000,
+          isDay: weatherData ? Boolean(weatherData?.current?.is_day) : true,
         },
         forecast: {
-          hours: weatherData?.forecast.forecastday[0].hour
-            ? getRecentWeatherData(
-                weatherData?.forecast.forecastday[0].hour
-              ).reverse()
+          hours: weatherData?.forecast?.forecastday[0]?.hour
+            ? getRecentWeatherData(weatherData?.forecast?.forecastday[0]?.hour)
             : null,
         },
       }}

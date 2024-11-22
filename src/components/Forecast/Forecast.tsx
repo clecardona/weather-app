@@ -1,10 +1,8 @@
-import { Box } from '@mui/material';
+import { Box } from "@mui/material"
 
-import { useWeather } from '../../context/WeatherProvider';
-import {
-  ForecastItem,
-  LoadingSkeletonItem,
-} from './ForecastItem';
+import { useWeather } from "../../context/WeatherProvider"
+import useMobile from "../../hooks/isMobile"
+import { ForecastItem, LoadingSkeletonItem } from "./ForecastItem"
 
 interface IForecast {
   title: string
@@ -14,7 +12,13 @@ const BG_COLOR = "#000000"
 export function Forecast({ title }: IForecast) {
   const { isLoading, forecast } = useWeather()
   const isComponentLoading = isLoading || !forecast.hours
+  const isMobile = useMobile()
 
+  const getForecastHours = () => {
+    if (!forecast?.hours) return undefined
+    return isMobile ? forecast.hours : [...forecast.hours].reverse()
+  }
+  const forecastHours = getForecastHours()
   return (
     <CurveFooter>
       <Box
@@ -24,14 +28,14 @@ export function Forecast({ title }: IForecast) {
           pt: 0,
         }}
       >
-        <Box pr={6}>
+        <Box pr={[0, 6]}>
           <Box
             sx={{
               fontWeight: "bold",
               fontSize: 30,
-              textAlign: "right",
+              textAlign: ["center", "right"],
               zIndex: 1,
-              // pr: 3,
+              p: [1, 0],
             }}
           >
             {title}
@@ -39,9 +43,11 @@ export function Forecast({ title }: IForecast) {
 
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "row-reverse",
-              gap: 4,
+              display: ["grid", "flex"],
+              gridTemplateRows: ["1fr 1fr", "unset"],
+              gridTemplateColumns: ["1fr 1fr 1fr", "unset"],
+              flexDirection: ["unset", "row-reverse"],
+              gap: [1, 4],
             }}
           >
             {isComponentLoading &&
@@ -49,8 +55,8 @@ export function Forecast({ title }: IForecast) {
                 <LoadingSkeletonItem key={idx} />
               ))}
             {!isComponentLoading &&
-              forecast.hours &&
-              forecast.hours.map((hour, idx) => (
+              forecastHours &&
+              forecastHours.map((hour, idx) => (
                 <ForecastItem hour={hour} key={idx} />
               ))}
           </Box>
@@ -90,11 +96,12 @@ const CurveFooter = ({
         >
           <path d='M0,16 L0,15 C35,13 65,12 100,8 L100,16 Z' fill={BG_COLOR} />
         </Box>
+
         {/* The box under */}
         <Box
           sx={{
             position: "relative",
-            height: 125,
+            height: [280, 125],
             width: "100%",
             background: BG_COLOR,
             mt: -1,

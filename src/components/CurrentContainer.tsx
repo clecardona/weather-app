@@ -9,9 +9,10 @@ export function CurrentContainer() {
       id='current-container'
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        flexDirection: ["column-reverse", "row"],
+        justifyContent: ["flex-end", "space-between"],
         alignItems: "start",
-        maxHeight: 250,
+        maxHeight: ["55%", 250],
         height: "100%",
       }}
     >

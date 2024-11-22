@@ -1,7 +1,7 @@
-import { CircleOff } from 'lucide-react';
-import { Hour } from 'types/types';
+import { CircleOff } from "lucide-react"
+import { Hour } from "types/types"
 
-import { weatherConditions } from '../components/weatherConditions';
+import { weatherConditions } from "../components/weatherConditions"
 
 export function extractTime(dateString: string) {
   const dateObject = new Date(dateString)

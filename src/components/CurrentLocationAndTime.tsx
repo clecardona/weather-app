@@ -10,7 +10,7 @@ import {
 
 import { useWeather } from '../context/WeatherProvider';
 import { useTime } from '../hooks/useTime';
-import { ChangeLocationModal } from './ChangeLocationModal';
+import { FullScreenDialog } from './ChangeLocationModal';
 
 export function CurrentLocationAndTime() {
   const [isOpen, setIsOpen] = useState(false)
@@ -34,7 +34,7 @@ export function CurrentLocationAndTime() {
           variant='outlined'
           onClick={() => setIsOpen(true)}
           sx={{
-            color: "white",
+            color: "beige",
             borderColor: "transparent",
             display: "flex",
             gap: 0.3,
@@ -59,10 +59,18 @@ export function CurrentLocationAndTime() {
         >
           {time}
         </Box>
-        <Box sx={{ pr: 1, color: "white" }}>{date}</Box>
+        <Box
+          sx={{
+            pr: 1,
+            color: "white",
+            fontSize: 22,
+          }}
+        >
+          {date.slice(0, -1)}
+        </Box>
       </Box>
 
-      <ChangeLocationModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <FullScreenDialog isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   )
 }

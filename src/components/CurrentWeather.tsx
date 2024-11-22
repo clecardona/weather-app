@@ -1,13 +1,12 @@
-import {
-  Box,
-  Skeleton,
-} from '@mui/material';
+import { Box, Skeleton } from "@mui/material"
 
-import { useWeather } from '../context/WeatherProvider';
-import { WeatherIconAnimated } from './weatherConditions';
+import { useWeather } from "../context/WeatherProvider"
+import useMobile from "../hooks/isMobile"
+import { WeatherIconAnimated } from "./weatherConditions"
 
 export const CurrentWeather = () => {
   const { currentWeather, isLoading } = useWeather()
+  const isMobile = useMobile()
 
   const isComponentLoading = isLoading && !currentWeather.temperature
 
@@ -16,12 +15,13 @@ export const CurrentWeather = () => {
   return (
     <Box
       id='currentWeather'
+      onClick={() => window.location.reload()}
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        p: 3,
-        pl: 9,
+        p: [0, 3],
+        pl: [0, 9],
         position: "relative",
       }}
     >
@@ -43,13 +43,13 @@ export const CurrentWeather = () => {
         sx={{
           display: "flex",
           position: "absolute",
-          left: 30,
-          bottom: -30,
-          width: "100%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          bottom: [-70, -30],
         }}
       >
         <WeatherIconAnimated
-          style={{ height: 120, filter: "saturate(0.3)" }}
+          style={{ height: isMobile ? 170 : 120, filter: "saturate(0.3)" }}
           conditionCode={currentWeather?.conditionCode}
           isDay={currentWeather.isDay ? currentWeather.isDay : true}
         />

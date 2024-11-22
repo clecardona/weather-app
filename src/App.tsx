@@ -1,13 +1,20 @@
-import "./App.css"
+import './App.css';
 
-import { useEffect } from "react"
+import { useEffect } from 'react';
 
-import { App as CapacitorApp } from "@capacitor/app"
-import { Capacitor } from "@capacitor/core"
-import { StatusBar, Style } from "@capacitor/status-bar"
+import { App as CapacitorApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import {
+  StatusBar,
+  Style,
+} from '@capacitor/status-bar';
+import {
+  createTheme,
+  ThemeProvider,
+} from '@mui/material/styles';
 
-import Weather from "./components/Weather"
-import WeatherProvider from "./context/WeatherProvider"
+import Weather from './components/Weather';
+import WeatherProvider from './context/WeatherProvider';
 
 function App() {
   useEffect(() => {
@@ -43,9 +50,17 @@ function App() {
 
   return (
     <WeatherProvider>
-      <Weather />
+      <ThemeProvider theme={darkTheme}>
+        <Weather />
+      </ThemeProvider>
     </WeatherProvider>
   )
 }
 
 export default App
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+})
