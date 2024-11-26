@@ -1,7 +1,7 @@
 import { CircleOff } from "lucide-react"
 import { Hour } from "types/types"
 
-import { weatherConditions } from "../components/weatherConditions"
+import { conditions } from "../utils/conditions"
 
 export function extractTime(dateString: string) {
   const dateObject = new Date(dateString)
@@ -25,17 +25,17 @@ export function getHoursToDisplay(array: Hour[]) {
 export function getRecentWeatherData(array: Hour[]) {
   const currentEpochTime = Math.floor(Date.now() / 1000)
 
-  let filteredData = array
+  const filteredData = array
     .filter((item) => item.time_epoch >= currentEpochTime)
     .filter((_, index) => index % 2 === 0)
     .slice(0, 6)
 
-  if (filteredData.length < 6) {
-    filteredData = array
-      .filter((item) => item.time_epoch > currentEpochTime)
-      .filter((_, index) => index % 1 === 0)
-      .slice(0, 6)
-  }
+  // if (filteredData.length < 6) {
+  //   filteredData = array
+  //     .filter((item) => item.time_epoch > currentEpochTime)
+  //     .filter((_, index) => index % 1 === 0)
+  //     .slice(0, 6)
+  // }
 
   return filteredData
 }
@@ -62,11 +62,11 @@ export function formatDateTime(dateStr: string): { day: string; time: string } {
 }
 
 export function getConditionText(conditionCode: number) {
-  if (!(conditionCode in weatherConditions)) return ""
-  return weatherConditions[conditionCode].simple
+  if (!(conditionCode in conditions)) return ""
+  return conditions[conditionCode].simple
 }
 export function getConditionIcon(conditionCode: number) {
-  if (!(conditionCode in weatherConditions)) return <CircleOff />
-  const Icon = weatherConditions[conditionCode].icon
+  if (!(conditionCode in conditions)) return <CircleOff />
+  const Icon = conditions[conditionCode].icon
   return <Icon />
 }

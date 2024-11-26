@@ -11,8 +11,6 @@ import {
   Wind,
 } from "lucide-react"
 
-import { Box } from "@mui/material"
-
 // Import all SVG files
 import clearDay from "../assets/icons/clear-day.svg"
 import clearNight from "../assets/icons/clear-night.svg"
@@ -48,13 +46,12 @@ import snowy3Night from "../assets/icons/snowy-3-night.svg"
 interface WeatherCondition {
   text: string
   simple: string
-  icon: LucideIcon
   color: string
+  icon: LucideIcon
   iconAnimated: { day: string; night: string }
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const weatherConditions: Record<number, WeatherCondition> = {
+export const conditions: Record<number, WeatherCondition> = {
   1000: {
     text: "Sunny",
     simple: "sunny",
@@ -63,6 +60,26 @@ export const weatherConditions: Record<number, WeatherCondition> = {
     iconAnimated: {
       day: clearDay,
       night: clearNight,
+    },
+  },
+  1100: {
+    text: "Mostly clear",
+    simple: "sunny",
+    icon: Sun,
+    color: "#EAB308",
+    iconAnimated: {
+      day: clearDay,
+      night: clearNight,
+    },
+  },
+  1001: {
+    text: "Partly cloudy",
+    simple: "cloudy",
+    icon: CloudSun,
+    color: "#6B7280",
+    iconAnimated: {
+      day: cloudy2Day,
+      night: cloudy2Night,
     },
   },
   1003: {
@@ -415,6 +432,16 @@ export const weatherConditions: Record<number, WeatherCondition> = {
       night: rainy1Night,
     },
   },
+  4200: {
+    text: "Light rain shower",
+    simple: "rain",
+    icon: CloudRain,
+    color: "#3B82F6",
+    iconAnimated: {
+      day: rainy1Day,
+      night: rainy1Night,
+    },
+  },
   1243: {
     text: "Moderate or heavy rain shower",
     simple: "rain",
@@ -536,57 +563,30 @@ export const weatherConditions: Record<number, WeatherCondition> = {
     },
   },
 }
-// eslint-disable-next-line react-refresh/only-export-components
-export default weatherConditions
 
-export const WeatherIcon = ({
-  condition,
-  style,
-  ...props
-}: {
-  condition: number
-  style?: object
-}) => {
-  const weather = weatherConditions[condition]
-  return <weather.icon style={{ color: weather.color, ...style }} {...props} />
-}
-interface WeatherIconAnimatedProps {
-  conditionCode?: number
-  isDay?: boolean
-  style?: object
-}
-
-export const WeatherIconAnimated = ({
-  conditionCode = 1000,
-  isDay = true,
-  style,
-  ...props
-}: WeatherIconAnimatedProps) => {
-  const condition = weatherConditions[conditionCode]
-
-  if (!condition) {
-    console.warn(`Weather condition code ${conditionCode} not found`)
-    return (
-      <Box style={{ color: "white", ...style }} {...props}>
-        <img
-          src={isDay ? clearDay : clearNight}
-          alt='Weather condition not found'
-        />
-      </Box>
-    )
-  }
-
-  const iconSrc = isDay
-    ? condition.iconAnimated.day
-    : condition.iconAnimated.night
-
-  return (
-    <img
-      src={iconSrc}
-      alt={condition.text}
-      title={condition.text}
-      style={{ color: condition.color, ...style }}
-      {...props}
-    />
-  )
-}
+// "weatherCode": {
+//       "0": "Unknown",
+//       "1000": "Clear, Sunny",
+//       "1100": "Mostly Clear",
+//       "1101": "Partly Cloudy",
+//       "1102": "Mostly Cloudy",
+//       "1001": "Cloudy",
+//       "2000": "Fog",
+//       "2100": "Light Fog",
+//       "4000": "Drizzle",
+//       "4001": "Rain",
+//       "4200": "Light Rain",
+//       "4201": "Heavy Rain",
+//       "5000": "Snow",
+//       "5001": "Flurries",
+//       "5100": "Light Snow",
+//       "5101": "Heavy Snow",
+//       "6000": "Freezing Drizzle",
+//       "6001": "Freezing Rain",
+//       "6200": "Light Freezing Rain",
+//       "6201": "Heavy Freezing Rain",
+//       "7000": "Ice Pellets",
+//       "7101": "Heavy Ice Pellets",
+//       "7102": "Light Ice Pellets",
+//       "8000": "Thunderstorm"
+//     },

@@ -1,11 +1,8 @@
-import {
-  Box,
-  Skeleton,
-} from '@mui/material';
+import { Box, Skeleton } from "@mui/material"
 
-import { WeatherIconAnimated } from '../../components/weatherConditions';
-import { Hour } from '../../types/types';
-import { extractTime } from '../../utils/utils';
+import { Hour } from "../../types/types"
+import { extractTime } from "../../utils/utils"
+import { WeatherIconAnimated } from "../WeatherIcons"
 
 export const ForecastItem = ({ hour }: { hour: Hour }) => {
   return (

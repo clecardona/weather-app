@@ -2,7 +2,7 @@ import { Box, Skeleton } from "@mui/material"
 
 import { useWeather } from "../context/WeatherProvider"
 import useMobile from "../hooks/isMobile"
-import { WeatherIconAnimated } from "./weatherConditions"
+import { WeatherIconAnimated } from "./WeatherIcons"
 
 export const CurrentWeather = () => {
   const { currentWeather, isLoading } = useWeather()

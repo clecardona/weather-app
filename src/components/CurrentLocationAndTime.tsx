@@ -1,16 +1,13 @@
-import { useState } from 'react';
+import { useState } from "react"
 
-import { MapPin } from 'lucide-react';
+import { MapPin } from "lucide-react"
 
-import {
-  Box,
-  Button,
-  Skeleton,
-} from '@mui/material';
+import { Box, Button, Skeleton } from "@mui/material"
 
-import { useWeather } from '../context/WeatherProvider';
-import { useTime } from '../hooks/useTime';
-import { FullScreenDialog } from './ChangeLocationModal';
+import { useWeather } from "../context/WeatherProvider"
+import { useTime } from "../hooks/useTime"
+import { FullScreenDialog } from "./ChangeLocationModal"
+import SingleLineTruncate from "./Library/SingleLineTruncate"
 
 export function CurrentLocationAndTime() {
   const [isOpen, setIsOpen] = useState(false)
@@ -43,11 +40,12 @@ export function CurrentLocationAndTime() {
           }}
         >
           <MapPin />
-          <Box fontWeight='bold' component='span'>
-            {currentWeather.location.city}
-          </Box>
-          <Box component='span'>|</Box>
-          <Box component='span'>{currentWeather.location.country}</Box>
+          <Box fontWeight='bold'>{currentWeather.location.city}</Box>
+          <Box>|</Box>
+          <SingleLineTruncate width={200}>
+            {currentWeather.location.country}
+          </SingleLineTruncate>
+          {/* <Box>{currentWeather.location.country}</Box> */}
         </Button>
         <Box
           sx={{

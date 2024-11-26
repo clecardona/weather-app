@@ -68,7 +68,7 @@
       ]]>
     </style>
   </defs>
-  <g transform="translate(28,22)" filter="url(#blur)">
+  <g transform="translate(28,18)" filter="url(#blur)">
     <g class="am-weather-sun">
       <line
         transform="translate(0,9)"

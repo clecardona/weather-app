@@ -11,7 +11,7 @@ export function CurrentContainer() {
         display: "flex",
         flexDirection: ["column-reverse", "row"],
         justifyContent: ["flex-end", "space-between"],
-        alignItems: "start",
+        alignItems: ["center", "start"],
         maxHeight: ["55%", 250],
         height: "100%",
       }}
