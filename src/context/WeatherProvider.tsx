@@ -43,10 +43,24 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<unknown>(null)
 
-  //TODO: see if tomorrow.io is better API
   const BASE_URL = `https://api.weatherapi.com/v1/forecast.json?key=${
     import.meta.env.VITE_APP_WEATHER_API_KEY
-  }&q=${location}&days=1&aqi=no&alerts=no`
+  }&q=${location}&days=2&aqi=no&alerts=no`
+
+  const getFullForecast = () => {
+    if (!weatherData) return []
+    if (
+      weatherData.forecast.forecastday[0].hour &&
+      weatherData.forecast.forecastday[1].hour
+    ) {
+      return [
+        ...weatherData.forecast.forecastday[0].hour,
+        ...weatherData.forecast.forecastday[1].hour,
+      ]
+    }
+    return []
+  }
+  const forecast = getFullForecast()
 
   const fetchWeatherData = async () => {
     setError(null)
@@ -95,7 +109,7 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
         },
         forecast: {
           hours: weatherData?.forecast?.forecastday[0]?.hour
-            ? getRecentWeatherData(weatherData?.forecast?.forecastday[0]?.hour)
+            ? getRecentWeatherData(forecast)
             : null,
         },
       }}
